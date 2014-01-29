@@ -25,9 +25,11 @@ valid_labels = zeros(size(images,3)*1/10,1);
 v = randperm(size(training_data.train{7}.labels, 1));
 
 error = zeros(1,10);
+best_pten = -6.7;
+best_error = 1;
 
 for p_ten=[-6.7 -6.69 -6.68 -6.67 -6.66 -6.65 -6.64 -6.63 -6.62 -6.61 -6.6 -6.59 -6.58 -6.57 -6.56 -6.55 -6.54 -6.53 -6.52 -6.51 -6.5]
-    c = 10^(p_ten)
+    c = 10^(p_ten);
     for k=1:10,
         valid_indices = v((k-1)*1000+1:k*1000);
         training_indices = [v(1:(k-1)*1000), v(k*1000+1:10000)];
@@ -59,10 +61,15 @@ for p_ten=[-6.7 -6.69 -6.68 -6.67 -6.66 -6.65 -6.64 -6.63 -6.62 -6.61 -6.6 -6.59
         error(k) = benchmark(valid_labels, predicted_labels);
         cd liblinear-1.94/matlab
     end
-    p_ten
+    c
     avg_error = mean(error)
+    if avg_error < best_error
+        best_error = avg_error;
+        best_pten = p_ten;
+    end 
 end
-%{
+
+bestc = 10^(best_pten)
 mtx = zeros(size(images,3),size(images,1)*size(images,2));
 for x=1:size(images,1),
     for y=1:size(images,2),
@@ -71,8 +78,8 @@ for x=1:size(images,1),
         end
     end
 end
-model = train(labels,sparse(mtx), '-c 0.000000263385');
+model = train(labels,sparse(mtx), ['-c ' num2str(bestc)]);
 predicted_labels = predict(test_labels, sparse(test_mtx), model);
-benchmark(predicted_labels, test_labels)
-%}
 cd ../..
+benchmark(predicted_labels, test_labels)
+

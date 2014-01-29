@@ -27,7 +27,7 @@ v = randperm(size(training_data.train{7}.labels, 1));
 error = zeros(1,10);
 
 for p_ten=-15:15
-    c = 10^(p_ten)
+    c = 10^(p_
     for k=1:10,
         valid_indices = v((k-1)*1000+1:k*1000);
         training_indices = [v(1:(k-1)*1000), v(k*1000+1:10000)];
@@ -59,7 +59,7 @@ for p_ten=-15:15
         error(k) = benchmark(valid_labels, predicted_labels);
         cd liblinear-1.94/matlab
     end
-    p_ten
-    avg_error = mean(error)
+    
 end
+avg_error = mean(error)
 cd ../..

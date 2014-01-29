@@ -26,7 +26,7 @@ v = randperm(size(training_data.train{7}.labels, 1));
 
 error = zeros(1,10);
 
-for p_ten=-15:15
+for p_ten=[-6.7 -6.69 -6.68 -6.67 -6.66 -6.65 -6.64 -6.63 -6.62 -6.61 -6.6 -6.59 -6.58 -6.57 -6.56 -6.55 -6.54 -6.53 -6.52 -6.51 -6.5]
     c = 10^(p_ten)
     for k=1:10,
         valid_indices = v((k-1)*1000+1:k*1000);
@@ -62,4 +62,17 @@ for p_ten=-15:15
     p_ten
     avg_error = mean(error)
 end
+%{
+mtx = zeros(size(images,3),size(images,1)*size(images,2));
+for x=1:size(images,1),
+    for y=1:size(images,2),
+        for z=1:size(images,3),
+            mtx(z,size(images,1)*(x-1)+y) = images(x,y,z);
+        end
+    end
+end
+model = train(labels,sparse(mtx), '-c 0.000000263385');
+predicted_labels = predict(test_labels, sparse(test_mtx), model);
+benchmark(predicted_labels, test_labels)
+%}
 cd ../..

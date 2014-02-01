@@ -25,11 +25,11 @@ for x=1:size(images,1),
         end
     end
 end
-model = train(labels,sparse(mtx), '-c 0.0000002');
+model = train(labels,sparse(mtx), '-c 0.0000002 -q');
 predicted_labels = predict(test_labels, sparse(test_mtx), model);
 cd ../..
 if size(images,3) == 10000
-    c = confusionmat(test_labels, predicted_labels);
+    c = confusionmat(test_labels, predicted_labels)
     imagesc(c)
     colorbar
 end

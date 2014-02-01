@@ -29,7 +29,7 @@ for k=1:size(training_data.train,2),
             end
         end
     end
-    model = train(labels,sparse(mtx), '-c 0.0000002');
+    model = train(labels,sparse(mtx), '-c 0.0000002 -q');
     predicted_labels = predict(test_labels, sparse(test_mtx), model);
     cd ../..
     X(k) = size(images,3);
